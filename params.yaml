@@ -1,0 +1,14 @@
+ip: "127.0.0.1"
+
+left_upper_corner: [-0.144, -0.435]
+right_down_corner: [-0.164, -0.415]
+safe_hight: 0.201
+# min_hight: 0.01
+sensor_hight: 0.200
+max_sensor_depth: 0.005
+force: 10    # downwards force in Newtons
+
+speed: [0.3, 0.3]   ## maximal speed and acceleration
+
+grid:
+  steps: [0.001, 0.002]   # steps in meters

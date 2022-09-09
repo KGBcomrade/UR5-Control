@@ -1,0 +1,10 @@
+ur_rtde       # in pip only
+numpy
+matplotlib
+tqdm
+jupyter
+jupyterlab
+sacred
+python-dotenv
+pymongo
+pyyaml
