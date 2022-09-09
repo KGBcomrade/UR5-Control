@@ -1,0 +1,10 @@
+ __pycache__/
+*.pyc
+*.ipynb_checkpoints
+*.npy
+*.pt
+.pylintrc
+.vscode
+venv*
+/logdir
+.env
