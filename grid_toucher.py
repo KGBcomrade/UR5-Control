@@ -55,13 +55,13 @@ def touch_sensor(_run):
     p1 = config['right_down_corner']
     net_step[0] *= np.sign(p1[0]-p0[0])
     net_step[1] *= np.sign(p1[1]-p0[1])
-    shape = [(p1[0]-p0[0])//net_step[0]+1, (p1[1]-p0[1])//net_step[1]+1]
+    shape = [int((p1[0]-p0[0])//net_step[0]+1), int((p1[1]-p0[1])//net_step[1]+1)]
     print("Shape is", shape)
     net_save_hight = config['safe_hight']
 
     # shape = [10, 10]
     
-    shape = [10, 10]
+    # shape = [10, 10]
     net_corner = p0
     net_massive = [
         [ [net_corner[0]+i*net_step[0], net_corner[1]+j*net_step[1]]
