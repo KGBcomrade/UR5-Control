@@ -73,7 +73,7 @@ def touch_sensor(_run):
         
     for point_line in net_massive:
         for point in point_line:
-            # print(point)
+            print(point)
             point_results = {"target_coordinate": point,
                              "base_coordinate":[],
                              "force_z":[],
@@ -98,7 +98,7 @@ def touch_sensor(_run):
             dt = 1.0/500  # 2ms
 
             # Execute 500Hz control loop for 4 seconds, each cycle is 2ms
-            for i in range(2000):
+            for i in range(1000):
                 rtde_c.initPeriod()
                 # First move the robot down for 2 seconds, then up for 2 seconds
                 rtde_c.forceMode(task_frame, selection_vector, wrench, force_type, limits)
@@ -122,6 +122,8 @@ def touch_sensor(_run):
             #     print("time limit stop")
             rtde_c.forceModeStop()
             _run.log_scalar('point_results', point_results)
+            rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
+            
     _run.log_scalar('test_metrics', [4, 5])
     _run.log_scalar('test_metrics', [8, 9])
     _run.log_scalar('test_metrics', [12, 15])
