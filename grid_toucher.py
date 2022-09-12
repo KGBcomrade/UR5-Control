@@ -73,7 +73,7 @@ def touch_sensor(_run):
         
     for point_line in net_massive:
         for point in point_line:
-            print(point)
+            # print(point)
             point_results = {"target_coordinate": point,
                              "base_coordinate":[],
                              "force_z":[],
@@ -81,10 +81,14 @@ def touch_sensor(_run):
                              "deformation":[],
                              "base_coordinate":[],
                              }
-            c_state = rtde_r.getActualTCPPose()
+            
+            rtde_r.disconnect()
+            rtde_r.reconnect()
+    
+            c_state = rtde_r.getTargetTCPPose()
             rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
             c_state = rtde_r.getActualTCPPose()
-            rtde_c.moveL(point + c_state[2:6], *config['speed'])
+            rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
             
             task_frame = [0, 0, 0, 0, 0, 0]
             selection_vector = [0, 0, 1, 0, 0, 0]
@@ -94,11 +98,11 @@ def touch_sensor(_run):
             dt = 1.0/500  # 2ms
 
             # Execute 500Hz control loop for 4 seconds, each cycle is 2ms
-            for i in range(200):
+            for i in range(2000):
                 rtde_c.initPeriod()
                 # First move the robot down for 2 seconds, then up for 2 seconds
                 rtde_c.forceMode(task_frame, selection_vector, wrench, force_type, limits)
-                
+ 
                 ## logging
                 _run.log_scalar('base_coordinate', rtde_r.getActualTCPPose())
                 point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
@@ -110,14 +114,14 @@ def touch_sensor(_run):
                 _run.log_scalar('deformation', depth)
                 point_results['deformation'].append(depth)
                 #todo add sensor mesurement logging
-                if depth > config['max_sensor_depth']:
-                    break
+                # if depth > config['max_sensor_depth']:
+                #     print("max depth stop")
+                #     break
                 rtde_c.waitPeriod(dt)
-
+            # else:
+            #     print("time limit stop")
             rtde_c.forceModeStop()
             _run.log_scalar('point_results', point_results)
-            
-    # for  j in range(10):
     _run.log_scalar('test_metrics', [4, 5])
     _run.log_scalar('test_metrics', [8, 9])
     _run.log_scalar('test_metrics', [12, 15])
