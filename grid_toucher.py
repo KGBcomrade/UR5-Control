@@ -80,6 +80,7 @@ def touch_sensor(_run):
                              "vector_force":[],
                              "deformation":[],
                              "base_coordinate":[],
+                             'power': []
                              }
             
             rtde_r.disconnect()
@@ -95,25 +96,28 @@ def touch_sensor(_run):
             wrench = [0, 0, -config['force'], 0, 0, 0]   # forced in Newtons
             force_type = 2
             limits = [2, 2, 1.5, 1, 1, 1]   # limits speeds in directions of main movement and deviations in others
-            dt = 1.0/500  # 2ms
+            dt = 1.0/config['working_freq']
+            push_time = config['push_time']
 
             # Execute 500Hz control loop for 4 seconds, each cycle is 2ms
-            for i in range(1000):
+            for i in range(int(push_time/dt)):
                 rtde_c.initPeriod()
                 # First move the robot down for 2 seconds, then up for 2 seconds
                 rtde_c.forceMode(task_frame, selection_vector, wrench, force_type, limits)
  
                 ## logging
-                _run.log_scalar('base_coordinate', rtde_r.getActualTCPPose())
                 point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
                 _run.log_scalar('force_z', rtde_r.getActualTCPForce()[2])
                 point_results['force_z'].append(rtde_r.getActualTCPForce()[2])
-                _run.log_scalar('vector_force', rtde_r.getActualTCPForce())
                 point_results['vector_force'].append(rtde_r.getActualTCPForce())
                 depth = max(0, config['sensor_hight']-rtde_r.getActualTCPPose()[2])
-                _run.log_scalar('deformation', depth)
+                # _run.log_scalar('deformation', depth)
                 point_results['deformation'].append(depth)
                 #todo add sensor mesurement logging
+                # power = ...
+                # point_results['power'].append(power)
+                # _run.log_scalar('power', power)
+                
                 # if depth > config['max_sensor_depth']:
                 #     print("max depth stop")
                 #     break

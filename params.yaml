@@ -8,6 +8,9 @@ safe_hight: -0.0288  # in meters
 sensor_hight: -0.0288
 max_sensor_depth: 0.01
 force: 0.2    # downwards force in Newtons
+push_time: 1    # seconds
+
+working_freq: 100   # Hz
 
 speed: [0.3, 0.1]   ## maximal speed and acceleration
 
