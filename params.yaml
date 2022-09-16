@@ -1,15 +1,15 @@
 # ip: "127.0.0.1"   # sim
 ip: "10.201.2.179"   # real robot
 
-left_upper_corner: [0.3478, -0.0745]     # x, y in meters
-right_down_corner: [0.3277, -0.1123]    # x, y in meters
-safe_hight: 0.0057  # in meters
+left_upper_corner: [0.445, -0.0695]     # x, y in meters
+right_down_corner: [0.46, -0.10]    # x, y in meters
+safe_hight: -0.0288  # in meters
 # min_hight: 0.01
-sensor_hight: 0.0042
-max_sensor_depth: 0.001
-force: 1    # downwards force in Newtons
+sensor_hight: -0.0288
+max_sensor_depth: 0.01
+force: 0.2    # downwards force in Newtons
 
 speed: [0.3, 0.1]   ## maximal speed and acceleration
 
 grid:
-  steps: [0.001, 0.002]   # steps in meters
+  steps: [0.001, 0.005]   # steps in meters

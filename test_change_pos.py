@@ -11,14 +11,16 @@ rtde_r.isConnected()
 rtde_c = rtde_control.RTDEControlInterface(host)
 
 for i in range(10):
-    time.sleep(1)
+    # time.sleep(1)
+    print("Disconnection", rtde_r.disconnect())
+    print("reconnection", rtde_r.reconnect())
     
     pos = rtde_r.getActualTCPPose()
     new_pos = rtde_r.getActualTCPPose()
-    new_pos[0] += -.05
+    new_pos[0] += -.01
     rtde_c.moveL(new_pos)
     new_getter = rtde_r.getActualTCPPose()
-    print(new_getter)
-    print(pos)
-    print(rtde_r.getTargetTCPPose())
+    print("new 'acctual' pose", new_getter)
+    print("old pose          ", pos)
+    print("target pos        ", rtde_r.getTargetTCPPose())
 
