@@ -91,44 +91,50 @@ def touch_sensor(_run):
             c_state = rtde_r.getActualTCPPose()
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
             
+            dt = 1.0/config['working_freq']
+            push_time_list = config['push_time']
+            force_list = config['force']
+            
             task_frame = [0, 0, 0, 0, 0, 0]
             selection_vector = [0, 0, 1, 0, 0, 0]
-            wrench = [0, 0, -config['force'], 0, 0, 0]   # forced in Newtons
-            force_type = 2
-            limits = [2, 2, 1.5, 1, 1, 1]   # limits speeds in directions of main movement and deviations in others
-            dt = 1.0/config['working_freq']
-            push_time = config['push_time']
-
-            # Execute 500Hz control loop for 4 seconds, each cycle is 2ms
-            for i in range(int(push_time/dt)):
-                rtde_c.initPeriod()
-                # First move the robot down for 2 seconds, then up for 2 seconds
-                rtde_c.forceMode(task_frame, selection_vector, wrench, force_type, limits)
- 
-                ## logging
-                point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
-                _run.log_scalar('force_z', rtde_r.getActualTCPForce()[2])
-                point_results['force_z'].append(rtde_r.getActualTCPForce()[2])
-                point_results['vector_force'].append(rtde_r.getActualTCPForce())
-                depth = max(0, config['sensor_hight']-rtde_r.getActualTCPPose()[2])
-                # _run.log_scalar('deformation', depth)
-                point_results['deformation'].append(depth)
-                #todo add sensor mesurement logging
-                # power = ...
-                # point_results['power'].append(power)
-                # _run.log_scalar('power', power)
+            if type(force_list) != type([]):
+                force_list = [force_list]
+                push_time_list = [push_time_list]
+            for force, push_time in zip(force_list, push_time_list):
                 
-                # if depth > config['max_sensor_depth']:
-                #     print("max depth stop")
-                #     break
-                rtde_c.waitPeriod(dt)
-            # else:
-            #     print("time limit stop")
+                wrench = [0, 0, -force, 0, 0, 0]   # forced in Newtons
+                force_type = 2
+                limits = [2, 2, 1.5, 1, 1, 1]   # limits speeds in directions of main movement and deviations in others
+
+                # Execute 500Hz control loop for 4 seconds, each cycle is 2ms
+                for i in range(int(push_time/dt)):
+                    rtde_c.initPeriod()
+                    # First move the robot down for 2 seconds, then up for 2 seconds
+                    rtde_c.forceMode(task_frame, selection_vector, wrench, force_type, limits)
+    
+                    ## logging
+                    point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
+                    _run.log_scalar('force_z', rtde_r.getActualTCPForce()[2])
+                    point_results['force_z'].append(rtde_r.getActualTCPForce()[2])
+                    point_results['vector_force'].append(rtde_r.getActualTCPForce())
+                    depth = max(0, config['sensor_hight']-rtde_r.getActualTCPPose()[2])
+                    # _run.log_scalar('deformation', depth)
+                    point_results['deformation'].append(depth)
+                    #todo add sensor mesurement logging
+                    # power = ...
+                    # point_results['power'].append(power)
+                    # _run.log_scalar('power', power)
+                    
+                    # if depth > config['max_sensor_depth']:
+                    #     print("max depth stop")
+                    #     break
+                    rtde_c.waitPeriod(dt)
+                # else:
+                #     print("time limit stop")
+                
+                ## todo log something after maximal deformation is reached
+                
             rtde_c.forceModeStop()
             _run.log_scalar('point_results', point_results)
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
-            
-    _run.log_scalar('test_metrics', [4, 5])
-    _run.log_scalar('test_metrics', [8, 9])
-    _run.log_scalar('test_metrics', [12, 15])
             
