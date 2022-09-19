@@ -1,3 +1,4 @@
+from cmath import nan
 import numpy as np
 import yaml
 
@@ -43,6 +44,18 @@ import rtde_receive
 rtde_c = rtde_control.RTDEControlInterface(config['ip'])
 rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'])
 
+## init PowerMeter
+import pyvisa
+
+rm = pyvisa.ResourceManager()
+
+rsrc = rm.open_resource(config['power_meter_address'],
+                                read_termination='\n')
+
+## init Arduino
+import serial
+arduino = serial.Serial(port=config['arduino_address'], baudrate=115200, timeout=.1)
+
 @ex.automain
 def touch_sensor(_run):
 
@@ -80,7 +93,10 @@ def touch_sensor(_run):
                              "vector_force":[],
                              "deformation":[],
                              "base_coordinate":[],
-                             'power': []
+                             'power': [],
+                             'aim_force': [],
+                             'tenso_signal': [],
+                             'final_power': [],
                              }
             
             rtde_r.disconnect()
@@ -120,10 +136,10 @@ def touch_sensor(_run):
                     depth = max(0, config['sensor_hight']-rtde_r.getActualTCPPose()[2])
                     # _run.log_scalar('deformation', depth)
                     point_results['deformation'].append(depth)
-                    #todo add sensor mesurement logging
-                    # power = ...
-                    # point_results['power'].append(power)
-                    # _run.log_scalar('power', power)
+
+                    power = rsrc.query('measure:power?')
+                    point_results['power'].append(power)
+                    _run.log_scalar('power', power)
                     
                     # if depth > config['max_sensor_depth']:
                     #     print("max depth stop")
@@ -132,7 +148,18 @@ def touch_sensor(_run):
                 # else:
                 #     print("time limit stop")
                 
-                ## todo log something after maximal deformation is reached
+                ## log something after maximal deformation is reached
+                point_results['aim_force'].append(force)
+                
+                tenso_string = arduino.readline()
+                if (tenso_string == b''):
+                    tenso_value = nan
+                else:
+                    tenso_value = float(tenso_string)
+                point_results['tenso_signal'].append(tenso_value)
+                
+                point_results['final_power'].append(rsrc.query('measure:power?'))
+                
                 
             rtde_c.forceModeStop()
             _run.log_scalar('point_results', point_results)

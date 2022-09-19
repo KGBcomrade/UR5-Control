@@ -1,5 +1,5 @@
-ip: "127.0.0.1"   # sim
-# ip: "10.201.2.179"   # real robot
+# ip: "127.0.0.1"   # sim
+ip: "10.201.2.179"   # real robot
 
 left_upper_corner: [0.445, -0.0695]     # x, y in meters
 right_down_corner: [0.46, -0.10]    # x, y in meters
@@ -8,7 +8,7 @@ safe_hight: -0.0288  # in meters
 sensor_hight: -0.0288
 max_sensor_depth: 0.01
 force: [0.2, 0.3, 0.4]    # downwards force in Newtons
-push_time: [1, 0.2, 0.2]    # seconds
+push_time: [1, 0.3, 0.3]    # seconds
 
 working_freq: 100   # Hz
 
@@ -16,3 +16,6 @@ speed: [0.3, 0.1]   ## maximal speed and acceleration
 
 grid:
   steps: [0.001, 0.005]   # steps in meters
+
+power_meter_address: 'USB0::4883::32888::P0006292::0::INSTR'
+arduino_address: '/dev/ttyACM0'
