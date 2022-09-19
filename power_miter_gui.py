@@ -1,23 +1,22 @@
-# import pyvisa
+import pyvisa
 
-# rm = pyvisa.ResourceManager()
+rm = pyvisa.ResourceManager()
 
-# for addr in rm.list_resources():
-#      try:
-#          print(addr, '-->', rm.open_resource(addr).query('*IDN?').strip())
-#      except pyvisa.VisaIOError:
-#          pass
+for addr in rm.list_resources():
+     try:
+         print(addr, '-->', rm.open_resource(addr).query('*IDN?').strip())
+     except pyvisa.VisaIOError:
+         pass
    
 # my_instrument = rm.open_resource('GPIB0::14::INSTR')
 # print(my_instrument.query('*IDN?'))
 
-# rsrc = rm.open_resource('USB0::0x1313::0x8078::P0009084::INSTR',
-#                                 read_termination='\n')
+rsrc = rm.open_resource('USB0::4883::32888::P0006292::0::INSTR',
+                                read_termination='\n')
 
-# print("Unit is", rsrc.query('power:dc:unit?'))
+print("Unit is", rsrc.query('power:dc:unit?'))
 
-# print("Power is", rsrc.query('measure:power?'))
-
+print("Power is", rsrc.query('measure:power?'))
 
 import time
 import numpy as np
@@ -60,8 +59,8 @@ while True:
     time.sleep(dt)
     time_run += dt
     
-    # value = rsrc.query('measure:power?')
-    value = 10      # tests
+    value = rsrc.query('measure:power?')
+    # value = 10      # tests
     
     hist.append(value)
     plt.clf()
