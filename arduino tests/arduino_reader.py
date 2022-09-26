@@ -12,10 +12,16 @@ while True:
     # value = write_read(num)
     
     # value = write_read(10)
-    value = arduino.readline()
-    time.sleep(1)
+    # value = arduino.readline()
+    value = arduino.read_all()
+    
+    time.sleep(0.1)
 
     # value = arduino.read()
-    print(value) # printing the value
-    print(float(value))
+    # if value != b'':
+    #     print(float(value))
+    # print(value) # printing the value
+    values = value.split()
+    if len(value) > 0:
+        print(value.split()[-1])
 

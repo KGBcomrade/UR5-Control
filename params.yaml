@@ -1,14 +1,14 @@
 # ip: "127.0.0.1"   # sim
 ip: "10.201.2.179"   # real robot
 
-left_upper_corner: [0.314, 0.180]     # x, y in meters
-right_down_corner: [0.316, 0.190]    # x, y in meters
-safe_hight: 0.290  # in meters
+left_upper_corner: [0.486, 0.331]     # x, y in meters
+right_down_corner: [0.476, 0.298]    # x, y in meters
+safe_hight: 0.2886  # in meters
 # min_hight: 0.01
-sensor_hight: 0.280
-max_sensor_depth: 0.002
+sensor_hight: 0.2884
+max_sensor_depth: 0.001
 sensor_depth_points: 10
-wait_time: 0.1  # seconds
+wait_time: 0.5  # seconds
 
 # force: [0.2, 0.3, 0.4]    # downwards force in Newtons
 # push_time: [1, 0.3, 0.3]    # seconds

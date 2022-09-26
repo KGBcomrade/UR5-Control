@@ -108,13 +108,14 @@ def touch_sensor(_run):
                 point_results['deformation'].append(depth)
                 _run.log_scalar('deformation', depth)
                                     
-                tenso_string = arduino.readline()
-                if (tenso_string == b'' or tenso_string == ''):
+                tenso_string = arduino.read_all()
+                tesno_values = tenso_string.split()
+                if (len(tesno_values) == 0):
                     tenso_value = None
                 else:
-                    tenso_value = float(tenso_string)
+                    tenso_value = float(tesno_values[-1])
                 point_results['tenso_signal'].append(tenso_value)
-                
+                _run.log_scalar("tesno_signal", tenso_value)
                 
                 power = float(rsrc.query('measure:power?'))
                 _run.log_scalar('power', power)
