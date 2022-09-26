@@ -104,7 +104,6 @@ def touch_sensor(_run):
     
             c_state = rtde_r.getTargetTCPPose()
             rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
-            c_state = rtde_r.getActualTCPPose()
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
             
             dt = 1.0/config['working_freq']
@@ -117,7 +116,7 @@ def touch_sensor(_run):
                 force_list = [force_list]
                 push_time_list = [push_time_list]
             for force, push_time in zip(force_list, push_time_list):
-                
+                rtde_c.forceModeStop()
                 wrench = [0, 0, -force, 0, 0, 0]   # forced in Newtons
                 force_type = 2
                 limits = [2, 2, 1.5, 1, 1, 1]   # limits speeds in directions of main movement and deviations in others
@@ -137,7 +136,7 @@ def touch_sensor(_run):
                     # _run.log_scalar('deformation', depth)
                     point_results['deformation'].append(depth)
 
-                    power = rsrc.query('measure:power?')
+                    power = float(rsrc.query('measure:power?'))
                     point_results['power'].append(power)
                     _run.log_scalar('power', power)
                     
@@ -152,13 +151,15 @@ def touch_sensor(_run):
                 point_results['aim_force'].append(force)
                 
                 tenso_string = arduino.readline()
-                if (tenso_string == b''):
+                if (tenso_string == b'' or tenso_string == ''):
                     tenso_value = nan
                 else:
                     tenso_value = float(tenso_string)
                 point_results['tenso_signal'].append(tenso_value)
                 
-                point_results['final_power'].append(rsrc.query('measure:power?'))
+                # point_results['tenso_signal'].append(tenso_string)
+                
+                point_results['final_power'].append(float(rsrc.query('measure:power?')))
                 
                 
             rtde_c.forceModeStop()

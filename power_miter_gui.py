@@ -55,12 +55,15 @@ hist_beg = 0
 hist = History(100)
 # print(hist.values)
 
+def get_value():
+    # return rsrc.query('measure:power?');
+    return 10       # tests
+    
 while True:
     time.sleep(dt)
     time_run += dt
     
-    value = rsrc.query('measure:power?')
-    # value = 10      # tests
+    value = get_value()
     
     hist.append(value)
     plt.clf()
