@@ -62,6 +62,7 @@ def touch_sensor(_run):
     net_step[1] *= np.sign(p1[1]-p0[1])
     shape = [int((p1[0]-p0[0])//net_step[0]+1), int((p1[1]-p0[1])//net_step[1]+1)]
     print("Shape is", shape)
+    print("Touching will take", config['sensor_depth_points']*config['wait_time']*shape[0]*shape[1]//60, 'minutes')
     net_save_hight = config['safe_hight']
 
     net_corner = p0
@@ -79,7 +80,7 @@ def touch_sensor(_run):
             point_results = {"target_coordinate": point,
                              "base_coordinate":[],
                              "vector_force":[],
-                             "deformation":[],
+                             "z_coord":[],
                              "base_coordinate":[],
                              'tenso_signal': [],
                              'final_power': [],
@@ -105,8 +106,8 @@ def touch_sensor(_run):
                 point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
                 point_results['vector_force'].append(rtde_r.getActualTCPForce())
 
-                point_results['deformation'].append(depth)
-                _run.log_scalar('deformation', depth)
+                point_results['z_coord'].append(depth)
+                _run.log_scalar('z_coord', depth)
                                     
                 tenso_string = arduino.read_all()
                 tesno_values = tenso_string.split()
