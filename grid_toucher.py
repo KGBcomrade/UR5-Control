@@ -84,11 +84,11 @@ def touch_sensor(_run):
                              "base_coordinate":[],
                              'tenso_signal': [],
                              'final_power': [],
+                             'inner_powers': [],
+                             'power_error': [],
                              }
             
-            rtde_r.disconnect()
-            rtde_r.reconnect()
-    
+
             c_state = rtde_r.getTargetTCPPose()
             rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
@@ -101,7 +101,23 @@ def touch_sensor(_run):
             for depth in target_depthes:
                 ## moving
                 rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
-                time.sleep(config['wait_time'])
+                
+                # sleeping
+                # time.sleep(config['wait_time'])
+                inner_powers = []
+                start_time = time.time()
+                while( time.time()-start_time < config['wait_time']):
+                    p = float(rsrc.query('measure:power?'))
+                    inner_powers.append(p)
+                    _run.log_scalar("all_powers", p)
+                # point_results['inner_powers'].append(inner_powers)
+                inner_powers = np.array(inner_powers)
+                
+                power = inner_powers.mean()
+                _run.log_scalar('power', power)
+                point_results['final_power'].append(power)
+                point_results['power_error'].append(np.sqrt(np.mean((inner_powers-power)**2)))
+                
                 ## logging
                 point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
                 point_results['vector_force'].append(rtde_r.getActualTCPForce())
@@ -117,10 +133,6 @@ def touch_sensor(_run):
                     tenso_value = float(tesno_values[-1])
                 point_results['tenso_signal'].append(tenso_value)
                 _run.log_scalar("tesno_signal", tenso_value)
-                
-                power = float(rsrc.query('measure:power?'))
-                _run.log_scalar('power', power)
-                point_results['final_power'].append(power)
                 
                 
             _run.log_scalar('point_results', point_results)
