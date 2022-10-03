@@ -34,7 +34,7 @@ with open('params.yaml') as conf_file:
 import rtde_control
 import rtde_receive
 rtde_c = rtde_control.RTDEControlInterface(config['ip'])
-rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'])
+rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'], frequency=50)
 
 ## init PowerMeter
 import pyvisa
