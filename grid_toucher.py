@@ -93,6 +93,8 @@ def touch_sensor(_run):
             rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
             
+            if config['sensor_hight'] - config['max_sensor_depth'] < config['minimal_possible_hight']:
+                raise ValueError("Robot was going to go to low. I can be dangerous for fiber! \nChange 'minimal_possible_hight' to continue.")
             target_depthes = np.linspace(config['sensor_hight'], 
                                          config['sensor_hight'] - config['max_sensor_depth'],
                                          config['sensor_depth_points'], 
