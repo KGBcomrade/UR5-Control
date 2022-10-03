@@ -105,6 +105,7 @@ def touch_sensor(_run):
                 ## moving
                 rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
                 
+                # _run.log_scalar("all_powers", 0)
                 # sleeping
                 time.sleep(config['time_to_sleep'])
                 inner_powers = []
@@ -112,7 +113,7 @@ def touch_sensor(_run):
                 while( time.time()-start_time < config['time_to_measure']):
                     p = float(rsrc.query('measure:power?'))
                     inner_powers.append(p)
-                    _run.log_scalar("all_powers", p)
+                    # _run.log_scalar("all_powers", p)
                 # point_results['inner_powers'].append(inner_powers)
                 inner_powers = np.array(inner_powers)
                 
