@@ -8,3 +8,8 @@ sacred
 python-dotenv
 pymongo
 pyyaml
+pyvisa
+pyvisa-py
+libusb
+PyUSB
+pyserial
