@@ -1,13 +1,13 @@
 # ip: "127.0.0.1"   # sim
 ip: "10.201.2.179"   # real robot
 
-left_upper_corner: [0.6016,    0.465]     # x, y in meters
-right_down_corner: [0.6021,  0.4655]    # x, y in meters
-safe_hight: 0.319  # in meters
+left_upper_corner: [601.6,    465.]     # x, y in millimeters
+right_down_corner: [602.1,  465.5]    # x, y in millimeters
+safe_hight: 319.  # in millimeters
 # min_hight: 0.01
-sensor_hight: 0.3174
-max_sensor_depth: 0.0006
-minimal_possible_hight: 0.3162
+sensor_hight: 317.4
+max_sensor_depth: 000.6
+minimal_possible_hight: 316.2
 # for 1 point touching first minimum is at 0.0002 мм
 sensor_depth_points: 6
 wait_time: 30  # seconds
@@ -20,7 +20,7 @@ wait_time: 30  # seconds
 speed: [0.3, 0.03]   ## maximal speed and acceleration
 
 grid:
-  steps: [0.001, 0.001]   # steps in meters
+  steps: [1, 1]   # steps in millimeters
 
 power_meter_address: 'USB0::4883::32888::P0006292::0::INSTR'
 arduino_address: '/dev/ttyACM0'

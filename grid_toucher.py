@@ -50,20 +50,21 @@ arduino = serial.Serial(port=config['arduino_address'], baudrate=115200, timeout
 
 @ex.automain
 def touch_sensor(_run):
+    safe_hight = config['safe_hight']/1e3
 
     c_state = rtde_r.getActualTCPPose()
-    if c_state[2] < config['safe_hight']:
-        rtde_c.moveL(c_state[:2] + [config['safe_hight']] + c_state[3:6], *config['speed'])
+    if c_state[2] < safe_hight:
+        rtde_c.moveL(c_state[:2] + [safe_hight] + c_state[3:6], *config['speed'])
     
-    net_step=config['grid']['steps']
-    p0 = config['left_upper_corner']
-    p1 = config['right_down_corner']
+    net_step=np.array(config['grid']['steps'])/1e3
+    p0 = np.array(config['left_upper_corner'])/1e3
+    p1 = np.array(config['right_down_corner'])/1e3
     net_step[0] *= np.sign(p1[0]-p0[0])
     net_step[1] *= np.sign(p1[1]-p0[1])
     shape = [int((p1[0]-p0[0])//net_step[0]+1), int((p1[1]-p0[1])//net_step[1]+1)]
     print("Shape is", shape)
     print("Touching will take", config['sensor_depth_points']*config['wait_time']*shape[0]*shape[1]//60, 'minutes')
-    net_save_hight = config['safe_hight']
+    net_save_hight = safe_hight
 
     net_corner = p0
     net_massive = [
@@ -98,7 +99,7 @@ def touch_sensor(_run):
             target_depthes = np.linspace(config['sensor_hight'], 
                                          config['sensor_hight'] - config['max_sensor_depth'],
                                          config['sensor_depth_points'], 
-                                         endpoint=True)
+                                         endpoint=True)/1e3
             
             for depth in target_depthes:
                 ## moving
