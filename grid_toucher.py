@@ -63,7 +63,7 @@ def touch_sensor(_run):
     net_step[1] *= np.sign(p1[1]-p0[1])
     shape = [int((p1[0]-p0[0])//net_step[0]+1), int((p1[1]-p0[1])//net_step[1]+1)]
     print("Shape is", shape)
-    print("Touching will take", config['sensor_depth_points']*config['wait_time']*shape[0]*shape[1]//60, 'minutes')
+    print("Touching will take", config['sensor_depth_points']*(config['time_to_measure']+config['time_to_sleep'])*shape[0]*shape[1]//60, 'minutes')
     net_save_hight = safe_hight
 
     net_corner = p0
@@ -106,10 +106,10 @@ def touch_sensor(_run):
                 rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
                 
                 # sleeping
-                # time.sleep(config['wait_time'])
+                time.sleep(config['time_to_sleep'])
                 inner_powers = []
                 start_time = time.time()
-                while( time.time()-start_time < config['wait_time']):
+                while( time.time()-start_time < config['time_to_measure']):
                     p = float(rsrc.query('measure:power?'))
                     inner_powers.append(p)
                     _run.log_scalar("all_powers", p)
