@@ -13,8 +13,7 @@ sensor_depth_points: 16
 time_to_measure: 0.8  # seconds
 time_to_sleep: 0.2
 
-# force: [0.2, 0.3, 0.4]    # downwards force in Newtons
-# push_time: [1, 0.3, 0.3]    # seconds
+sensor_id: null
 
 # working_freq: 100   # Hz
 
