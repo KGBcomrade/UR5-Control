@@ -139,7 +139,7 @@ def touch_sensor(_run):
                     except ValueError:
                         tenso_value = None
                 point_results['tenso_signal'].append(tenso_value)
-                _run.log_scalar("tesno_signal", tenso_value)
+                _run.log_scalar("tenso_signal", tenso_value)
                 
                 
             _run.log_scalar('point_results', point_results)
