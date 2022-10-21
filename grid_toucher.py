@@ -134,7 +134,10 @@ def touch_sensor(_run):
                 if (len(tesno_values) == 0):
                     tenso_value = None
                 else:
-                    tenso_value = float(tesno_values[-1])
+                    try:
+                        tenso_value = np.mean( [float(x) for x in tesno_values[-4:]])
+                    except ValueError:
+                        tenso_value = None
                 point_results['tenso_signal'].append(tenso_value)
                 _run.log_scalar("tesno_signal", tenso_value)
                 
