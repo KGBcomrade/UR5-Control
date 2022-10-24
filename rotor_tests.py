@@ -95,16 +95,16 @@ for i in range(1, len(relative_coords), 2):
 
 begining_of_fiber_coord = p0*[1, 0.5] + p1*[0, 0.5]     # beginning of relative coordinate system in rotated coord system.   
 
-direction_signs = np.sign(p0-p1)*[1, -1]    # directions for increasing coordinates
-
+direction_signs = np.sign(p1-p0)*[1, -1]    # directions for increasing coordinates
 for point_line in relative_coords:
     for rel_point in point_line:
-        # rel__xy_point = rotor.inverse(rel_point)    # rotation back to initial robot coordinate system
-        # rel__xy_point //= 1e3   #   converting in meters
         point = rotor.inverse(begining_of_fiber_coord + rel_point*direction_signs)/1e3 
         # rotating back into initial coordinate system and converting to mm-s
         point = point.tolist()   
         
-        # print(*[format(x, ".0f") for x in rel_point])
+        print()
+        print(" in rotated coordinate system", *[format(x, ".3f") for x in begining_of_fiber_coord + rel_point*direction_signs])
+        
+        print(*[format(x, ".0f") for x in rel_point])
         print(*[format(x, ".3f") for x in point])
         
