@@ -183,7 +183,7 @@ def touch_sensor(_run):
                     p = float(rsrc.query('measure:power?'))
                     inner_powers.append(p)
                     # _run.log_scalar("all_powers", p)
-                # point_results['inner_powers'].append(inner_powers)
+                point_results['inner_powers'].append(inner_powers[::10])
                 inner_powers = np.array(inner_powers)
                 
                 power = inner_powers.mean()
