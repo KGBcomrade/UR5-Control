@@ -143,8 +143,8 @@ def touch_sensor(_run):
             # rotating back into initial coordinate system and converting to mm-s
             point = point.tolist()   
             
-            print(*[format(x, ".0f") for x in rel_point], end='\t')
-            print(*[format(x, ".3f") for x in point])
+            print(*[format(x, ".1f") for x in rel_point], end='\t')
+            print(*[format(x, ".4f") for x in point])
             
             point_results = {"target_coordinate": point,
                              "relative_coordinate": rel_point,
@@ -170,6 +170,7 @@ def touch_sensor(_run):
                                          config['sensor_depth_points'], 
                                          endpoint=True)/1e3
             
+            # for depth in np.concatenate([target_depthes, target_depthes[::-1]]):
             for depth in target_depthes:
                 ## moving
                 rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
