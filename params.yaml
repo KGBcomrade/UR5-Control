@@ -12,19 +12,19 @@ sensor_hight: 324.2
 max_sensor_depth: 0.4
 minimal_possible_hight: 323.7
 # for 1 point touching first minimum is at 0.0002 мм
-sensor_depth_points: 8
-time_to_measure: 0.2  # seconds
-time_to_sleep: 0.2
+sensor_depth_points: 10
+time_to_measure: 0.15  # seconds
+time_to_sleep: 0.3
 
 sensor_id: 607
 
 # working_freq: 100   # Hz
 
-speed: [0.3, 0.03]   ## maximal speed and acceleration
+speed: [0.3, 0.08]   ## maximal speed and acceleration
 
 grid:
-  steps: [0.4, 3]   # steps in millimeters
-sensor_angle: -45  # angle between robot and sensor axes
+  steps: [10, 0.5]   # steps in millimeters
+sensor_angle: 0  # angle between robot and sensor axes
 
 power_meter_address: 'USB0::4883::32888::P0006292::0::INSTR'
 arduino_address: '/dev/ttyACM0'

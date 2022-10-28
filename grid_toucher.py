@@ -143,7 +143,7 @@ def touch_sensor(_run):
             # rotating back into initial coordinate system and converting to mm-s
             point = point.tolist()   
             
-            print(*[format(x, ".0f") for x in rel_point])
+            print(*[format(x, ".0f") for x in rel_point], end='\t')
             print(*[format(x, ".3f") for x in point])
             
             point_results = {"target_coordinate": point,
@@ -177,6 +177,7 @@ def touch_sensor(_run):
                 # _run.log_scalar("all_powers", 0)
                 # sleeping
                 time.sleep(config['time_to_sleep'])
+                arduino.read_all()  # removing values during movement
                 inner_powers = []
                 start_time = time.time()
                 while( time.time()-start_time < config['time_to_measure']):
@@ -205,7 +206,7 @@ def touch_sensor(_run):
                     tenso_value = None
                 else:
                     try:
-                        tenso_value = np.mean( [float(x) for x in tenso_values[-4:]])
+                        tenso_value = np.mean( [float(x) for x in tenso_values[-1:]])
                     except ValueError:
                         tenso_value = None
                 point_results['tenso_signal'].append(tenso_value)
