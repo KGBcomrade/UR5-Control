@@ -81,53 +81,50 @@ p1 = np.array(config['right_down_corner'])
 p0 = rotor.rotate(p0)
 p1 = rotor.rotate(p1)
 
-sensor_shape = np.abs(p1-p0)
-print("Sensor shape is", *[format(x, ".1f") for x in sensor_shape])
-    
-vertical_area = config['vertical_area']
-horisontal_area = config['horisontal_area']
-
-for i in range(len(horisontal_area)):
-    if horisontal_area[i] < 0:
-        horisontal_area[i] += sensor_shape[0]
-if horisontal_area[1] > sensor_shape[0] or horisontal_area[0]  > sensor_shape[0] \
-    or horisontal_area[1] < 0 or horisontal_area[0]  < 0:
-    raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
-if horisontal_area[1] < horisontal_area[0]:
-    raise ValueError("Error in horisontal area param. Error. Area is an empty set")
-if np.abs(vertical_area[0]) > sensor_shape[1]/2 or np.abs(vertical_area[0]) > sensor_shape[1]/2:
-    raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
-if horisontal_area[1] < horisontal_area[0]:
-    raise ValueError("Error in horisontal area param. Error. Area is an empty set")
-
-print("Target touching area is", horisontal_area, vertical_area)
-
-horisontal_area[1] += net_step[0]*0.00001
-vertical_area[1] += net_step[1]*0.00001
-# to include last point
-
-X, Y = np.arange(*horisontal_area, net_step[0]), np.arange(*vertical_area, net_step[1])
-print("Target coordinates are", X, Y)
-shape = len(X), len(Y)
-print("Net shape is", shape)
-print("Touching will take", config['sensor_depth_points']*(config['time_to_measure']+config['time_to_sleep'])*shape[0]*shape[1]//60, 'minutes')
-
-relative_coords = \
-[
-    [[X[i], Y[j]] for j in range(len(Y))] 
-     for i in range(len(X))
-]
-
-for i in range(1, len(relative_coords), 2):
-    relative_coords[i] = relative_coords[i][::-1]
-
-begining_of_fiber_coord = p0*[1, 0.5] + p1*[0, 0.5]     # beginning of relative coordinate system in rotated coord system.   
-
-direction_signs = np.sign(p1-p0)*[1, -1]    # directions for increasing coordinates
-
 
 @ex.automain
 def touch_sensor(_run):
+    sensor_shape = np.abs(p1-p0)
+    print("Sensor shape is", *[format(x, ".1f") for x in sensor_shape])
+        
+    vertical_area = config['vertical_area']
+    horisontal_area = config['horisontal_area']
+
+    for i in range(len(horisontal_area)):
+        if horisontal_area[i] < 0:
+            horisontal_area[i] += sensor_shape[0]
+    if horisontal_area[1] > sensor_shape[0] or horisontal_area[0]  > sensor_shape[0] \
+        or horisontal_area[1] < 0 or horisontal_area[0]  < 0:
+        raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
+    if horisontal_area[1] < horisontal_area[0]:
+        raise ValueError("Error in horisontal area param. Error. Area is an empty set")
+    if np.abs(vertical_area[0]) > sensor_shape[1]/2 or np.abs(vertical_area[0]) > sensor_shape[1]/2:
+        raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
+    if horisontal_area[1] < horisontal_area[0]:
+        raise ValueError("Error in horisontal area param. Error. Area is an empty set")
+
+    print("Target touching area is", horisontal_area, vertical_area)
+
+    horisontal_area[1] += net_step[0]*0.00001
+    vertical_area[1] += net_step[1]*0.00001
+    # to include last point
+
+    X, Y = np.arange(*horisontal_area, net_step[0]), np.arange(*vertical_area, net_step[1])
+    print("Target coordinates are", X, Y)
+    shape = len(X), len(Y)
+    print("Net shape is", shape)
+    print("Touching will take", config['sensor_depth_points']*(config['time_to_measure']+config['time_to_sleep'])*shape[0]*shape[1]//60, 'minutes')
+    relative_coords = \
+    [
+        [[X[i], Y[j]] for j in range(len(Y))] 
+        for i in range(len(X))
+    ]
+    for i in range(1, len(relative_coords), 2):
+        relative_coords[i] = relative_coords[i][::-1]
+    begining_of_fiber_coord = p0*[1, 0.5] + p1*[0, 0.5]     # beginning of relative coordinate system in rotated coord system.   
+    direction_signs = np.sign(p1-p0)*[1, -1]    # directions for increasing coordinates
+
+
     safe_hight = config['safe_hight']/1e3
 
     c_state = rtde_r.getActualTCPPose()
