@@ -22,3 +22,6 @@ To read data from Thorlab PowerMeter you have to install python PyVisa library t
 For pyvisa I also installed pyvisa-py backend with pip, libusb (or PyUSB) for usb access and allowed listening usb ports like here https://stackoverflow.com/questions/66480203/pyvisa-not-listing-usb-instrument-on-linux
 
 To log to database
+
+![](https://storage.yandexcloud.net/monthly-reports/September%202022/Amir/photo1666609449.jpeg)
+(Пояснение к смыслу параметров протыкивания)
