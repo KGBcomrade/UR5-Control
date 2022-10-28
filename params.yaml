@@ -5,8 +5,8 @@ left_upper_corner: [450.0,    -305.8]     # x, y in millimeters
 right_down_corner: [469.7, -266.0]   # x, y in millimeters
 safe_hight: 396  # in millimeters
 
-horisontal_area: [20, 21]  ## along the fiber, x' coord
-vertical_area: [-1, 1]  ## around the fiber, y' coord
+horisontal_area: [20, 20.4]  ## along the fiber, x' coord
+vertical_area: [-0.5001, -0.5]  ## around the fiber, y' coord
 
 sensor_hight: 395.2
 max_sensor_depth: 1.0
@@ -23,7 +23,7 @@ sensor_id: 602
 speed: [0.3, 0.08]   ## maximal speed and acceleration
 
 grid:
-  steps: [0.5, 0.1]   # steps in millimeters
+  steps: [0.5, 0.00001]   # steps in millimeters
 sensor_angle: 90  # angle between robot and sensor axes
 
 power_meter_address: 'USB0::4883::32888::P0006292::0::INSTR'
