@@ -150,9 +150,9 @@ def touch_sensor(_run):
                              "z_coord":[],
                              'tenso_signal': [],
                              'final_power': [],
-                             'inner_powers': [],
+                            #  'inner_powers': [],
                              'power_error': [],
-                             'inner_tenso_signals': [],
+                            #  'inner_tenso_signals': [],
                              }
             
 
@@ -182,7 +182,7 @@ def touch_sensor(_run):
                     p = float(rsrc.query('measure:power?'))
                     inner_powers.append(p)
                     # _run.log_scalar("all_powers", p)
-                point_results['inner_powers'].append(inner_powers[::10])
+                # point_results['inner_powers'].append(inner_powers[::10])
                 inner_powers = np.array(inner_powers)
                 
                 power = inner_powers.mean()
@@ -199,7 +199,7 @@ def touch_sensor(_run):
                                     
                 tenso_string = arduino.read_all()
                 tenso_values = tenso_string.split()
-                point_results['inner_tenso_signals'].append(tenso_values)
+                # point_results['inner_tenso_signals'].append(tenso_values)
                 if (len(tenso_values) == 0):
                     tenso_value = None
                 else:

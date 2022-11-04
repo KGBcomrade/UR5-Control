@@ -20,7 +20,7 @@ sensor_id: 593
 
 # working_freq: 100   # Hz
 
-speed: [0.3, 0.08]   ## maximal speed and acceleration
+speed: [0.1, 0.08]   ## maximal speed and acceleration
 
 grid:
   steps: [0.5, 0.4]   # steps in millimeters
