@@ -99,9 +99,9 @@ def touch_sensor(_run):
     if horisontal_area[1] < horisontal_area[0]:
         raise ValueError("Error in horisontal area param. Error. Area is an empty set")
     if np.abs(vertical_area[0]) > sensor_shape[1]/2 or np.abs(vertical_area[0]) > sensor_shape[1]/2:
-        raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
-    if horisontal_area[1] < horisontal_area[0]:
-        raise ValueError("Error in horisontal area param. Error. Area is an empty set")
+        raise ValueError("Error in vertical area param. Can't touch outside of sensor")
+    if vertical_area[1] < vertical_area[0]:
+        raise ValueError("Error in vertical area param. Error. Area is an empty set")
 
     print("Target touching area is", horisontal_area, vertical_area)
 
@@ -110,7 +110,7 @@ def touch_sensor(_run):
     # to include last point
 
     X, Y = np.arange(*horisontal_area, net_step[0]), np.arange(*vertical_area, net_step[1])
-    print("Target coordinates are", X, Y)
+    # print("Target coordinates are", X, Y)
     shape = len(X), len(Y)
     print("Net shape is", shape)
     print("Touching will take", config['sensor_depth_points']*(config['time_to_measure']+config['time_to_sleep'])*shape[0]*shape[1]//60, 'minutes')

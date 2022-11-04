@@ -56,8 +56,8 @@ hist = History(100)
 # print(hist.values)
 
 def get_value():
-    # return rsrc.query('measure:power?');
-    return 10       # tests
+    return rsrc.query('measure:power?');
+    # return 10       # tests
     
 while True:
     time.sleep(dt)
