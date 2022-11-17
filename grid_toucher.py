@@ -157,7 +157,6 @@ def touch_sensor(_run):
             
 
             c_state = rtde_r.getTargetTCPPose()
-            rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
             rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
             
             if config['sensor_hight'] - config['max_sensor_depth'] < config['minimal_possible_hight']:
@@ -166,6 +165,7 @@ def touch_sensor(_run):
                                          config['sensor_hight'] - config['max_sensor_depth'],
                                          config['sensor_depth_points'], 
                                          endpoint=True)/1e3
+            target_depthes = np.concatenate([[net_save_hight], target_depthes])
             
             # for depth in np.concatenate([target_depthes, target_depthes[::-1]]):
             for depth in target_depthes:
