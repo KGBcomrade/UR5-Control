@@ -25,9 +25,18 @@ if "username" in os.environ and "host" in os.environ and "password" in os.enviro
 else:
     ex.observers.append(FileStorageObserver('logdir'))
     input("WARNING! No password for db. Confirm logging locally")
-ex.add_config('params.yaml')
 
-with open('params.yaml') as conf_file:
+params_file = 'params.yaml'
+import sys
+print(sys.argv)
+for argv in sys.argv[1:]:
+    if argv.endswith('.yaml'):
+        params_file = argv
+        break
+
+ex.add_config(params_file)
+
+with open(params_file) as conf_file:
     config = yaml.safe_load(conf_file)
     
 ## Robot init
