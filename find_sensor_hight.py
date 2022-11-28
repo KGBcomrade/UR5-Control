@@ -25,9 +25,18 @@ if "username" in os.environ and "host" in os.environ and "password" in os.enviro
 else:
     ex.observers.append(FileStorageObserver('logdir'))
     input("WARNING! No password for db. Confirm logging locally")
-ex.add_config('params.yaml')
 
-with open('params.yaml') as conf_file:
+params_file = 'params.yaml'
+import sys
+print(sys.argv)
+for argv in sys.argv[1:]:
+    if argv.endswith('.yaml'):
+        params_file = argv
+        break
+
+ex.add_config(params_file)
+
+with open(params_file) as conf_file:
     config = yaml.safe_load(conf_file)
     
 ## Robot init
@@ -38,11 +47,12 @@ rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'], frequency=50)
 
 
 ## Params
-config['safe_hight'] = 350      ## beginning hight im mm
-config['minimal_possible_hight'] = 280      ## dangerous to pass hight im mm
+config['safe_hight'] = 395      ## beginning hight im mm
+config['minimal_possible_hight'] = 389      ## dangerous to pass hight im mm
 touching_y = 4    ## coordinates of touching in mm
 tenso_difference = 0.7      ## gramms to detect touching
 depth_step = 0.1
+config['speed'] = [0.01, 0.01]
 
 use_sensor_signal = False
 # todo add control of power signal
@@ -151,6 +161,8 @@ def touch_sensor(_run):
     c_state = rtde_r.getTargetTCPPose()
     rtde_c.moveL(c_state[:2] + [net_save_hight] + c_state[3:6], *config['speed'])
     rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
+
+    time.sleep(2)       # чтобы тензодатчик успокоился после перемещения
     
     target_depthes = np.linspace(config['sensor_hight'], 
                                     config['sensor_hight'] - config['max_sensor_depth'],
