@@ -28,7 +28,6 @@ else:
 
 params_file = 'params.yaml'
 import sys
-print(sys.argv)
 for argv in sys.argv[1:]:
     if argv.endswith('.yaml'):
         params_file = argv
