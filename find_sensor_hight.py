@@ -46,7 +46,7 @@ rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'], frequency=50)
 
 
 ## Params
-config['safe_hight'] = 395      ## beginning hight im mm
+config['safe_hight'] = 392      ## beginning hight im mm
 config['minimal_possible_hight'] = 389      ## dangerous to pass hight im mm
 touching_y = 4    ## coordinates of touching in mm
 tenso_difference = 0.7      ## gramms to detect touching
