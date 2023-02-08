@@ -1,6 +1,6 @@
 import yaml
 
-with open('params.yaml') as conf_file:
+with open('p_main.yaml') as conf_file:
     config = yaml.safe_load(conf_file)
     
 ## Robot init
@@ -16,3 +16,4 @@ new_pose = c_pose[0:3] + [2.222, -2.222, 0]
 
 rtde_c.moveL(new_pose, *config['speed'])
 # rtde_r.getActualJointPositionsHistory
+print(rtde_r.getActualTCPPose())

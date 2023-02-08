@@ -8,20 +8,21 @@ safe_hight: 390.6  # in millimeters (+0.2 of sensor)
 sensor_id: 
 
 horisontal_area: [5, -5]  ## along the fiber, x' coord
+## horisontal_area: [20, 20.01]  ## along the fiber, x' coord
 vertical_area: [0.2, 0.201]  ## around the fiber, y' coord
 sensor_depth_points: 20
 
 
 ## profile touching
 # horisontal_area: [20, 20.01]  ## along the fiber, x' coord
-# vertical_area: [-4, 4]  ## around the fiber, y' coord
+# vertical_area: [-1, 1]  ## around the fiber, y' coord
 # sensor_depth_points: 4
 
 
 sensor_hight: 390.40
-max_sensor_depth: 0.5
+max_sensor_depth: 0.3
 minimal_possible_hight: 389.5
-# for 1 point touching first minimum is at 0.0002 мм
+# for 1 point touching first minimum is at 0.2 мм
 time_to_measure: 0.15  # seconds
 time_to_sleep: 0.3
 
