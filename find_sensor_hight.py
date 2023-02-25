@@ -241,6 +241,30 @@ def touch_sensor(_run):
     second_depth = iteraterate(target_depthes)
     print("Reached second touching. Hight is\n", format(second_depth*1e3, ".2f"))
     rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
-    
+
+    # changing sensor hight in config file
+    put_hight_value_in_config(second_depth, params_file)
+
+
+
+def put_hight_value_in_config(sensor_hight, file_name):
+    """
+    Opens config file and replaces old sensor_, minimal_ 
+    and safe_  hights with new determined
+    """
+    import fileinput
+
+    for line in fileinput.input(files=file_name, inplace=True):
+        if line.count("sensor_hight:") == 1:
+            line = f"sensor_hight: {sensor_hight}\n"
+        
+        if line.count("minimal_possible_hight:") == 1:
+            line = f"minimal_possible_hight: {sensor_hight-0.6}\n"
+        
+        if line.count("safe_hight:") == 1:
+            line = f"safe_hight: {sensor_hight+0.4}  # in millimeters (+0.4 of sensor)\n"
+        
+        sys.stdout.write(line)
+        
     
     
