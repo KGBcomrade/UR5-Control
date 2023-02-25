@@ -55,8 +55,8 @@ config['minimal_possible_hight'] = 385      ## dangerous to pass hight im mm
 
 touching_y = 4    ## coordinates of touching in mm
 tenso_difference = 0.7      ## gramms to detect touching
-depth_step = 0.1
-# depth_step = 0.02
+depth_steps = [0.1, 0.02]
+small_indent = 0.1      # на сколько робот поднимется после первого косания для второго захода
 config['speed'] = [0.01, 0.01]
 
 use_sensor_signal = False
@@ -125,7 +125,7 @@ def touch_sensor(_run):
     print("Sensor shape is", *[format(x, ".1f") for x in sensor_shape])
         
 
-    print("Touching will take", (config['safe_hight'] - config['minimal_possible_hight'])//depth_step*(config['time_to_measure']+config['time_to_sleep'])//60, 'minutes')
+    # print("Touching will take", (config['safe_hight'] - config['minimal_possible_hight'])//depth_step*(config['time_to_measure']+config['time_to_sleep'])//60, 'minutes')
 
     begining_of_fiber_coord = p0*[1, 0.5] + p1*[0, 0.5]     # beginning of relative coordinate system in rotated coord system.   
     direction_signs = np.sign(p1-p0)*[1, -1]    # directions for increasing coordinates
@@ -169,14 +169,6 @@ def touch_sensor(_run):
 
     time.sleep(2)       # чтобы тензодатчик успокоился после перемещения
     
-    target_depthes = np.linspace(config['sensor_hight'], 
-                                    config['sensor_hight'] - config['max_sensor_depth'],
-                                    config['sensor_depth_points'], 
-                                    endpoint=True)/1e3
-    
-    target_depthes = np.arange(config['safe_hight'], config['minimal_possible_hight'], -depth_step)/1e3
-    
-    
     tenso_string = arduino.read_all()
     tenso_values = tenso_string.split()
     # point_results['inner_tenso_signals'].append(tenso_values)
@@ -191,55 +183,64 @@ def touch_sensor(_run):
             tenso_value = None
     
     null_tenso_signal = tenso_value
-    # for depth in np.concatenate([target_depthes, target_depthes[::-1]]):
-    for depth in target_depthes:
-        ## moving
-        rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
-        
-        # _run.log_scalar("all_powers", 0)
-        # sleeping
-        time.sleep(config['time_to_sleep'])
-        arduino.read_all()  # removing values during movement
-        inner_powers = []
-        start_time = time.time()
-        while( time.time()-start_time < config['time_to_measure']):
-            if use_sensor_signal:
-                p = float(rsrc.query('measure:power?'))
-                inner_powers.append(p)
-                # _run.log_scalar("all_powers", p)
-        # point_results['inner_powers'].append(inner_powers[::10])
-        if use_sensor_signal:
-            inner_powers = np.array(inner_powers)
+    
+    def iteraterate(target_depthes):
+        for depth in target_depthes:
+            ## moving
+            rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
             
-            power = inner_powers.mean()
-            _run.log_scalar('power', power)
-            point_results['final_power'].append(power)
-            point_results['power_error'].append(np.sqrt(np.mean((inner_powers-power)**2)))
-        
-        ## logging
-        point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
-        point_results['vector_force'].append(rtde_r.getActualTCPForce())
-
-        point_results['z_coord'].append(depth)
-        _run.log_scalar('z_coord', depth)
-                            
-        tenso_string = arduino.read_all()
-        tenso_values = tenso_string.split()
-        # point_results['inner_tenso_signals'].append(tenso_values)
-        if (len(tenso_values) == 0):
-            tenso_value = None
-        else:
-            try:
-                tenso_value = np.mean( [float(x) for x in tenso_values[-1:]])
-            except ValueError:
+            # _run.log_scalar("all_powers", 0)
+            # sleeping
+            time.sleep(config['time_to_sleep'])
+            arduino.read_all()  # removing values during movement
+            inner_powers = []
+            start_time = time.time()
+            while( time.time()-start_time < config['time_to_measure']):
+                if use_sensor_signal:
+                    p = float(rsrc.query('measure:power?'))
+                    inner_powers.append(p)
+                    # _run.log_scalar("all_powers", p)
+            # point_results['inner_powers'].append(inner_powers[::10])
+            if use_sensor_signal:
+                inner_powers = np.array(inner_powers)
+                
+                power = inner_powers.mean()
+                _run.log_scalar('power', power)
+                point_results['final_power'].append(power)
+                point_results['power_error'].append(np.sqrt(np.mean((inner_powers-power)**2)))
+            
+            ## logging
+            point_results['z_coord'].append(depth)
+            _run.log_scalar('z_coord', depth)
+                                
+            tenso_string = arduino.read_all()
+            tenso_values = tenso_string.split()
+            if (len(tenso_values) == 0):
                 tenso_value = None
-        point_results['tenso_signal'].append(tenso_value)
-        _run.log_scalar("tenso_signal", tenso_value)
-        print('hight is', format(depth*1e3, ".2f"), 'tenso signal is', tenso_value)
+            else:
+                try:
+                    tenso_value = np.mean( [float(x) for x in tenso_values[-1:]])
+                except ValueError:
+                    tenso_value = None
+            point_results['tenso_signal'].append(tenso_value)
+            _run.log_scalar("tenso_signal", tenso_value)
+            print('hight is', format(depth*1e3, ".2f"), 'tenso signal is', tenso_value)
+            
+            if np.abs(tenso_value - null_tenso_signal) >= tenso_difference:
+                # Reached touching. Hight is {depth}
+                _run.log_scalar('point_results', point_results)
+                return depth
+        raise "Didn't found sensor until minimal possible hight"
         
-        if np.abs(tenso_value - null_tenso_signal) >= tenso_difference:
-            print("Reached touching. Hight is\n", format(depth*1e3, ".2f"))
-            break
-    _run.log_scalar('point_results', point_results)
+    target_depthes = np.arange(config['safe_hight'], config['minimal_possible_hight'], -depth_steps[0])/1e3
+    
+    first_depth = iteraterate(target_depthes)
+    print("Reached first touching. Hight is\n", format(first_depth*1e3, ".2f"))
+            
+    target_depthes = np.arange(first_depth+small_indent, config['minimal_possible_hight'], -depth_steps[1])/1e3
+    second_depth = iteraterate(target_depthes)
+    print("Reached second touching. Hight is\n", format(second_depth*1e3, ".2f"))
     rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
+    
+    
     
