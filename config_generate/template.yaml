@@ -1,0 +1,36 @@
+# ip: "127.0.0.1"   # sim
+ip: "10.201.2.179"   # real robot
+
+left_upper_corner: $luc     # x, y in millimeters
+right_down_corner: $rdc   # x, y in millimeters
+safe_hight: 390.6  # in millimeters (+0.2 of sensor)
+
+sensor_id: $id
+
+horisontal_area: [5, -5]  ## along the fiber, x' coord
+## horisontal_area: [20, 20.01]  ## along the fiber, x' coord
+vertical_area: [0.2, 0.201]  ## around the fiber, y' coord
+sensor_depth_points: 20
+
+
+## profile touching
+# horisontal_area: [20, 20.01]  ## along the fiber, x' coord
+# vertical_area: [-1, 1]  ## around the fiber, y' coord
+# sensor_depth_points: 4
+
+
+sensor_hight: 390.40
+max_sensor_depth: 0.3
+minimal_possible_hight: 389.5
+# for 1 point touching first minimum is at 0.2 мм
+time_to_measure: 0.15  # seconds
+time_to_sleep: 0.3
+
+speed: [0.1, 0.08]   ## maximal speed and acceleration
+
+grid:
+  steps: [0.1, 0.1]   # steps in millimeters (x', y') = (hor, vert)
+sensor_angle: 90  # angle between robot and sensor axes
+
+power_meter_address: 'USB0::4883::32888::P0006292::0::INSTR'
+arduino_address: '/dev/ttyACM0'
