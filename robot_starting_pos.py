@@ -1,3 +1,7 @@
+'''
+Поворачивает клешню робота ровно вертикально. 
+'''
+
 import yaml
 
 with open('p_main.yaml') as conf_file:
