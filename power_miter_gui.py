@@ -21,59 +21,25 @@ print("Power is", rsrc.query('measure:power?'))
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from signal_plotter.plotter import animate_plotting
 
-
-class History():
-    
-    def __init__(self, N_points):
-        self.array = np.zeros(N_points)
-        self.beg = 0
-        self.end = N_points
-    
-    @property
-    def values(self):
-        return np.concatenate([self.array[self.beg:], self.array[:self.end]])
-    
-    def append(self, element):
-        self.beg+=1
-        self.end+=1
-        if self.end >= self.array.size:
-            self.beg -= self.array.size
-            self.end -= self.array.size
-        self.array[self.end-1] = element
-        
 
 time_run = 0
 dt = 0.1
 dt_print = 1
 
 time_history = 30
-N_points = int(time_history//dt)
-hist_beg = 0
     
 
-hist = History(100)
-# print(hist.values)
 
 def get_value():
     return rsrc.query('measure:power?');
-    # return 10       # tests
     
-while True:
-    time.sleep(dt)
-    time_run += dt
-    
-    value = get_value()
-    
-    hist.append(value)
-    plt.clf()
-    plt.plot(hist.values)
-    plt.ylim(bottom=0)
-    plt.pause(0.0005)
+# v = 10
+# def get_value():
+#     global v
+#     v += np.random.normal(0, 0.5)
+#     return v    # tests
     
     
-    if time_run > dt_print:
-        print(value)
-        # print(hist.values)    
-        time_run = 0
-    
+animate_plotting(get_value, history_duration=time_history, step_time=dt, print_time=dt_print)
