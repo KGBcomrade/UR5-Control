@@ -183,7 +183,7 @@ def touch_sensor(_run):
                 # _run.log_scalar("all_powers", 0)
                 # sleeping
                 time.sleep(config['time_to_sleep'])
-                arduino.read_all()  # removing values during movement
+                arduino.readlines()  # removing values during movement
                 inner_powers = []
                 start_time = time.time()
                 while( time.time()-start_time < config['time_to_measure']):
@@ -205,8 +205,7 @@ def touch_sensor(_run):
                 point_results['z_coord'].append(depth)
                 _run.log_scalar('z_coord', depth)
                                     
-                tenso_string = arduino.read_all()
-                tenso_values = tenso_string.split()
+                tenso_values = arduino.readlines()
                 # point_results['inner_tenso_signals'].append(tenso_values)
                 if (len(tenso_values) == 0):
                     tenso_value = None
@@ -214,6 +213,7 @@ def touch_sensor(_run):
                     try:
                         tenso_value = np.mean( [float(x) for x in tenso_values[-1:]])
                     except ValueError:
+                        print("Got wrong value from arduino serial")
                         tenso_value = None
                 point_results['tenso_signal'].append(tenso_value)
                 _run.log_scalar("tenso_signal", tenso_value)
