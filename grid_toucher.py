@@ -183,7 +183,7 @@ def touch_sensor(_run):
                 # _run.log_scalar("all_powers", 0)
                 # sleeping
                 time.sleep(config['time_to_sleep'])
-                arduino.readlines()  # removing values during movement
+                arduino.read_all()  # removing values during movement
                 inner_powers = []
                 start_time = time.time()
                 while( time.time()-start_time < config['time_to_measure']):
@@ -202,10 +202,11 @@ def touch_sensor(_run):
                 point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
                 point_results['vector_force'].append(rtde_r.getActualTCPForce())
 
-                point_results['z_coord'].append(depth)
-                _run.log_scalar('z_coord', depth)
+                point_results['z_coord'].append(depth*1e3)
+                _run.log_scalar('z_coord', depth*1e3)
                                     
-                tenso_values = arduino.readlines()
+                tenso_string = arduino.read_all()
+                tenso_values = tenso_string.split()
                 # point_results['inner_tenso_signals'].append(tenso_values)
                 if (len(tenso_values) == 0):
                     tenso_value = None

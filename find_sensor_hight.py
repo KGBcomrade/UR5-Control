@@ -118,6 +118,25 @@ p1 = np.array(config['right_down_corner'])
 p0 = rotor.rotate(p0)
 p1 = rotor.rotate(p1)
 
+def put_hight_value_in_config(sensor_hight, file_name):
+    """
+    Opens config file and replaces old sensor_, minimal_ 
+    and safe_  hights with new determined
+    """
+    import fileinput
+
+    for line in fileinput.input(files=file_name, inplace=True):
+        if line.count("sensor_hight:") == 1:
+            line = f"sensor_hight: {sensor_hight}\n"
+        
+        if line.count("minimal_possible_hight:") == 1:
+            line = f"minimal_possible_hight: {sensor_hight-0.6}\n"
+        
+        if line.count("safe_hight:") == 1:
+            line = f"safe_hight: {sensor_hight+0.4}  # in millimeters (+0.4 of sensor)\n"
+        
+        sys.stdout.write(line)
+        
 
 @ex.automain
 def touch_sensor(_run):
@@ -229,8 +248,8 @@ def touch_sensor(_run):
             if np.abs(tenso_value - null_tenso_signal) >= tenso_difference:
                 # Reached touching. Hight is {depth}
                 _run.log_scalar('point_results', point_results)
-                return depth
-        raise "Didn't found sensor until minimal possible hight"
+                return depth*1e3
+        raise Exception("Didn't found sensor until minimal possible hight")
         
     target_depthes = np.arange(config['safe_hight'], config['minimal_possible_hight'], -depth_steps[0])/1e3
     
@@ -246,25 +265,5 @@ def touch_sensor(_run):
     put_hight_value_in_config(second_depth, params_file)
 
 
-
-def put_hight_value_in_config(sensor_hight, file_name):
-    """
-    Opens config file and replaces old sensor_, minimal_ 
-    and safe_  hights with new determined
-    """
-    import fileinput
-
-    for line in fileinput.input(files=file_name, inplace=True):
-        if line.count("sensor_hight:") == 1:
-            line = f"sensor_hight: {sensor_hight}\n"
         
-        if line.count("minimal_possible_hight:") == 1:
-            line = f"minimal_possible_hight: {sensor_hight-0.6}\n"
-        
-        if line.count("safe_hight:") == 1:
-            line = f"safe_hight: {sensor_hight+0.4}  # in millimeters (+0.4 of sensor)\n"
-        
-        sys.stdout.write(line)
-        
-    
     
