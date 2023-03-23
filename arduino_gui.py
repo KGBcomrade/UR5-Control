@@ -16,10 +16,18 @@ import serial
 import time
 arduino = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=.1)
     
+def read_all_values():
+    values = []
+    while arduino.in_waiting:
+        line = arduino.readline().decode().strip()
+        if len(line) > 0:
+            value = float(line)
+            values.append(value)
+    return values
 
 def get_value():
     
-    values = arduino.readlines()
+    values = read_all_values()
     res = 0
     if len(values) > 0:
         res = np.mean([float(x) for x in values[-1:]])
