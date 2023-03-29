@@ -49,7 +49,6 @@ def animate_plotting(
     plt.xlabel("time (s)")
     
     def init():
-        ax.set_xlim(xdata[0], xdata[-1])
         return ln,
 
     def update(frame):
@@ -57,18 +56,10 @@ def animate_plotting(
         ln.set_data(xdata, hist.values)
         ax.relim()      # Recompute the data limits based on current artists
         ax.autoscale()
-        # print(ax.get_yticklabels())
-        # ax.set_yticks(ax.get_yticks())
-        # ax.set_yticklabels(ax.get_yticks())
-        return ln,
-    
-    '''
-        ax.relim()
-        ax.autoscale_view(True,True,True)
         
-        такая конфигурация вроде дает неправильную y ось.
-        '''
-    
+        fig.canvas.draw()
+        
+        return ln,
 
     
 
