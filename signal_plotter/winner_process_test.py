@@ -1,4 +1,4 @@
-from threading import Thread
+# from signal_plotter import animate_plotting
 from plotter import animate_plotting
 from numpy import random
 
@@ -21,4 +21,6 @@ win = Winner()
 
 animate_plotting(win.get_value, 
                  history_duration=time_history,
-                 step_time=dt)
+                 step_time=dt,
+                 ymax=5,
+                 ymin=-5)
