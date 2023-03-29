@@ -15,8 +15,8 @@ def animate_plotting(
 
     Args:
         read_value_func (Callable[[], float]): returns values to plot
-        history_duration (float, optional): time to keep history. Defaults to 30.0.
-        step_time (float, optional): time between calls of read_value_func. Defaults to 0.1.
+        history_duration (float, optional): time (s) to keep history. Defaults to 30.0.
+        step_time (float, optional): time (s) between calls of read_value_func. Defaults to 0.1.
         print_time (float, optional): time between printing values to std.out. If None, doesn't print. Defaults to None.
         ylim ()
     """
@@ -61,8 +61,7 @@ def animate_plotting(
         
         return ln,
 
-    
-
-    ani = FuncAnimation(fig, update, frames=np.linspace(0, 2*np.pi, 128),
-                    init_func=init, blit=True)
+    ani = FuncAnimation(fig, update,
+                    init_func=init, blit=True,
+                    interval=step_time*1e3)
     plt.show()
