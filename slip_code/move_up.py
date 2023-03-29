@@ -3,16 +3,20 @@ import yaml
 import time
 
 
-# параметры:
+params_file = 'slip_code/p_slip.yaml'
 
-L = 0.5     # m, на сколько подниматься
-up_speed = [0.02, 0.1]  # m/s, m/s^2 скорость подъема
+with open(params_file) as conf_file:
+    config = yaml.safe_load(conf_file)
+    
+# параметры (внутри params_file):
 
+L = config['L']    # m, на сколько роботу подниматься
+up_speed = config['up_speed']  # m/s, m/s^2 скорость подъема
 
-come_back = True    # опускаться ли обратно после завершения
-back_speed = [0.1, 0.1]     # m/s, m/s^2 скорость возвращения
+come_back = config['come_back']    # опускаться ли обратно после завершения
+back_speed = config['back_speed']     # m/s, m/s^2 скорость возвращения
 
-use_thorlab_powermeter = True
+use_thorlab_powermeter = False
 
 ## sacred staff
 import os
@@ -39,18 +43,8 @@ else:
     # input("WARNING! No password for db. Confirm logging locally")
     print("WARNING! Logging locally")
 
-params_file = 'p_main.yaml'
-import sys
-for argv in sys.argv[1:]:
-    if argv.endswith('.yaml'):
-        params_file = argv
-        break
 
-# ex.add_config(params_file)
-
-with open(params_file) as conf_file:
-    config = yaml.safe_load(conf_file)
-    
+ex.add_config(params_file)
 ## Robot init
 import rtde_control
 import rtde_receive
@@ -83,6 +77,8 @@ def touch_sensor(_run):
     i = 0
     while (initial_state[2]+L > 0.01+c_state[2]):
         i+=1
+        c_state = rtde_r.getTargetTCPPose()
+
         ## logging
         if i%20 == 0:
             _run.log_scalar('tsp_pose', rtde_r.getActualTCPPose())
