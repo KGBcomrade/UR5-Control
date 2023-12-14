@@ -1,9 +1,9 @@
 # ip: "127.0.0.1"   # sim
-ip: "10.201.2.179"   # real robot
+ip: "192.168.1.179"   # real robot
 
 left_upper_corner: $luc     # x, y in millimeters
 right_down_corner: $rdc   # x, y in millimeters
-safe_hight: 390.6  # in millimeters (+0.2 of sensor)
+safe_hight: 408  # in millimeters (+0.2 of sensor)
 
 sensor_id: $id
 
@@ -19,7 +19,7 @@ sensor_depth_points: 20
 # sensor_depth_points: 4
 
 
-sensor_hight: 390.40
+sensor_hight: 402
 max_sensor_depth: 0.3
 minimal_possible_hight: 389.5
 # for 1 point touching first minimum is at 0.2 мм

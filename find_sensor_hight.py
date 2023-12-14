@@ -46,17 +46,17 @@ rtde_r = rtde_receive.RTDEReceiveInterface(config['ip'], frequency=50)
 
 
 ## Params
-config['safe_hight'] = 396      ## beginning hight im mm
+config['safe_hight'] = 405     ## beginning hight im mm
 config['minimal_possible_hight'] = 385      ## dangerous to pass hight im mm
 
 # config['safe_hight'] = 391      ## beginning hight im mm
 # config['minimal_possible_hight'] = 385      ## dangerous to pass hight im mm
 
 
-touching_y = 4    ## coordinates of touching in mm
+touching_y = 1    ## coordinates of touching in mm
 tenso_difference = 0.7      ## gramms to detect touching
 depth_steps = [0.1, 0.02]
-small_indent = 0.1      # на сколько робот поднимется после первого косания для второго захода
+small_indent = 0.2      # на сколько робот поднимется после первого косания для второго захода
 config['speed'] = [0.01, 0.01]
 
 use_sensor_signal = False
@@ -207,7 +207,7 @@ def touch_sensor(_run):
         for depth in target_depthes:
             ## moving
             rtde_c.moveL(point + [depth] + c_state[3:6], *config['speed'])
-            
+
             # _run.log_scalar("all_powers", 0)
             # sleeping
             time.sleep(config['time_to_sleep'])
@@ -252,13 +252,13 @@ def touch_sensor(_run):
         raise Exception("Didn't found sensor until minimal possible hight")
         
     target_depthes = np.arange(config['safe_hight'], config['minimal_possible_hight'], -depth_steps[0])/1e3
-    
+
     first_depth = iteraterate(target_depthes)
-    print("Reached first touching. Hight is\n", format(first_depth*1e3, ".2f"))
+    print("Reached first touching. Hight is\n", format(first_depth, ".2f"))
             
     target_depthes = np.arange(first_depth+small_indent, config['minimal_possible_hight'], -depth_steps[1])/1e3
     second_depth = iteraterate(target_depthes)
-    print("Reached second touching. Hight is\n", format(second_depth*1e3, ".2f"))
+    print("Reached second touching. Hight is\n", format(second_depth, ".2f"))
     rtde_c.moveL(point + [net_save_hight] + c_state[3:6], *config['speed'])
 
     # changing sensor hight in config file
