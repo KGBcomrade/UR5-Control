@@ -89,6 +89,7 @@ p1 = np.array(config['right_down_corner'])
 p0 = rotor.rotate(p0)
 p1 = rotor.rotate(p1)
 
+log_all = True
 
 @ex.automain
 def touch_sensor(_run):
@@ -101,13 +102,13 @@ def touch_sensor(_run):
     for i in range(len(horisontal_area)):
         if horisontal_area[i] < 0:
             horisontal_area[i] += sensor_shape[0]
-    if horisontal_area[1] > sensor_shape[0] or horisontal_area[0]  > sensor_shape[0] \
-        or horisontal_area[1] < 0 or horisontal_area[0]  < 0:
-        raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
+    # if horisontal_area[1] > sensor_shape[0] or horisontal_area[0]  > sensor_shape[0] \
+    #     or horisontal_area[1] < 0 or horisontal_area[0]  < 0:
+    #     raise ValueError("Error in horisontal area param. Can't touch outside of sensor")
     if horisontal_area[1] < horisontal_area[0]:
         raise ValueError("Error in horisontal area param. Error. Area is an empty set")
-    if np.abs(vertical_area[0]) > sensor_shape[1]/2 or np.abs(vertical_area[0]) > sensor_shape[1]/2:
-        raise ValueError("Error in vertical area param. Can't touch outside of sensor")
+    # if np.abs(vertical_area[0]) > sensor_shape[1]/2 or np.abs(vertical_area[0]) > sensor_shape[1]/2:
+    #     raise ValueError("Error in vertical area param. Can't touch outside of sensor")
     if vertical_area[1] < vertical_area[0]:
         raise ValueError("Error in vertical area param. Error. Area is an empty set")
 
@@ -121,6 +122,12 @@ def touch_sensor(_run):
     # print("Target coordinates are", X, Y)
     shape = len(X), len(Y)
     print("Net shape is", shape)
+    number_points = shape[0]*shape[1]
+    points_conter = 0
+    if number_points > 200:
+        log_all = False # econnomy mode
+    else:
+        log_all = True
     print("Touching will take", config['sensor_depth_points']*(config['time_to_measure']+config['time_to_sleep'])*shape[0]*shape[1]//60, 'minutes')
     relative_coords = \
     [
@@ -147,9 +154,13 @@ def touch_sensor(_run):
             point = rotor.inverse(begining_of_fiber_coord + rel_point*direction_signs)/1e3 
             # rotating back into initial coordinate system and converting to mm-s
             point = point.tolist()   
+            points_conter += 1
             
             print(*[format(x, ".1f") for x in rel_point], end='\t')
-            print(*[format(x, ".4f") for x in point])
+            # print(*[format(x, ".4f") for x in point])
+            if int((points_conter-1)/number_points*100) > int(points_conter/number_points*100):
+                print(int(points_conter/number_points*100), "%", end='')
+            print()
             
             point_results = {"target_coordinate": point,
                              "relative_coordinate": rel_point,
@@ -194,16 +205,10 @@ def touch_sensor(_run):
                 inner_powers = np.array(inner_powers)
                 
                 power = inner_powers.mean()
-                _run.log_scalar('power', power)
                 point_results['final_power'].append(power)
                 point_results['power_error'].append(np.sqrt(np.mean((inner_powers-power)**2)))
-                
-                ## logging
-                point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
-                point_results['vector_force'].append(rtde_r.getActualTCPForce())
 
                 point_results['z_coord'].append(depth*1e3)
-                _run.log_scalar('z_coord', depth*1e3)
                                     
                 tenso_string = arduino.read_all()
                 tenso_values = tenso_string.split()
@@ -217,7 +222,15 @@ def touch_sensor(_run):
                         print("Got wrong value from arduino serial")
                         tenso_value = None
                 point_results['tenso_signal'].append(tenso_value)
-                _run.log_scalar("tenso_signal", tenso_value)
+                
+                if log_all:
+                    _run.log_scalar('power', power)
+                    ## logging
+                    point_results['base_coordinate'].append(rtde_r.getActualTCPPose())
+                    point_results['vector_force'].append(rtde_r.getActualTCPForce())
+                    
+                    _run.log_scalar('z_coord', depth*1e3)
+                    _run.log_scalar("tenso_signal", tenso_value)
                 
                 
             _run.log_scalar('point_results', point_results)
