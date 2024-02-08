@@ -1,11 +1,12 @@
+# from signal_plotter import animate_plotting
 from plotter import animate_plotting
 from numpy import random
 
 time_run = 0
-dt = 0.1
+dt = 0.01
 dt_print = 1
 
-time_history = 30
+time_history = 3
 
 class Winner():
     def __init__(self, step=0.5) -> None:
@@ -18,4 +19,8 @@ class Winner():
 
 win = Winner()
 
-animate_plotting(win.get_value)
+animate_plotting(win.get_value, 
+                 history_duration=time_history,
+                 step_time=dt,
+                 ymax=5,
+                 ymin=-5)

@@ -1,0 +1,1 @@
+from signal_plotter.plotter import animate_plotting

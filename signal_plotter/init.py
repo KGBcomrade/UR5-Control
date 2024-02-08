@@ -1,1 +1,0 @@
-from plotter import animate_plotting
